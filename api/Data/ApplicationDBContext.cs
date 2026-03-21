@@ -16,10 +16,16 @@ namespace api.Data
         {
             
         }
+        public DbSet<Note> Notes {get; set;}
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+
+            builder.Entity<Note>()
+                .HasOne(u => u.AppUser)
+                .WithMany(u => u.Notes)
+                .HasForeignKey(k => k.user_id);
 
             List<IdentityRole> roles = new List<IdentityRole>
             {
