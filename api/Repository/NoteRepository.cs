@@ -41,31 +41,19 @@ namespace api.Repository
         public async Task<List<Note>> GetAllAsync(NoteQueryOb noteQuery, AppUser user)
         {
             var notes = _context.Notes.Where(a => a.user_id == user.Id).AsQueryable();
-            if(noteQuery.pin == true)
+            if(noteQuery.IsDecsending == true)
             {
-                notes = notes.OrderByDescending(p => p.is_pinned);
 
-
-                if(noteQuery.IsDecsending == true)
-                {
-                    notes = ((IOrderedQueryable<Note>)notes).ThenByDescending(c => c.created_at);
-                }
-                else
-                {
-                    notes = ((IOrderedQueryable<Note>)notes).ThenBy(c => c.created_at);
-                }
+                notes = notes
+                    .OrderByDescending(p => p.is_pinned)    
+                    .ThenByDescending(c => c.created_at);   
             }
             else
             {
-        
-                if(noteQuery.IsDecsending == true)
-                {
-                    notes = notes.OrderByDescending(c => c.created_at);
-                }
-                else
-                {
-                    notes = notes.OrderBy(c => c.created_at);
-                }
+            
+                notes = notes
+                    .OrderByDescending(p => p.is_pinned)    
+                    .ThenBy(c => c.created_at);            
             }
 
             var skip = (noteQuery.PageNum - 1) * noteQuery.PageSize;

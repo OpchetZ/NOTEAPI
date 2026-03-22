@@ -28,6 +28,7 @@ namespace api.Mappers
             {
                 title = createNoteDto.title,
                 content = createNoteDto.content,
+                is_pinned = createNoteDto.is_pinned
                 
             };
         }
@@ -37,7 +38,8 @@ namespace api.Mappers
             return new Note
             {
               title = updateNoteDto.title,
-              content = updateNoteDto.content  
+              content = updateNoteDto.content,
+              is_pinned = updateNoteDto.is_pinned
             };
         }
     }

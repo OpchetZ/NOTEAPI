@@ -14,6 +14,6 @@ namespace api.Dtos.Note
         [MaxLength(500, ErrorMessage ="It's over 500 character")]
         public string content { get; set; } = string.Empty;
         [Required]
-        public bool is_pinned { get; set; } = false;
+        public bool is_pinned { get; set; }
     }
 }
