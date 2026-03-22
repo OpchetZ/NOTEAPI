@@ -38,43 +38,38 @@ namespace api.Repository
             return notemodel;
         }
 
-        public async Task<List<Note>> GetAllAsync(NoteQueryOb noteQuery, AppUser user)
+        public async Task<List<Note?>> GetAllAsync(NoteQueryOb noteQuery, AppUser user)
         {
             var notes = _context.Notes.Where(a => a.user_id == user.Id).AsQueryable();
-            if(noteQuery.pin == true)
+            if (!string.IsNullOrWhiteSpace(noteQuery.keyword))
             {
-                notes = notes.OrderByDescending(p => p.is_pinned);
+                     notes = notes.Where(n => n.title.Contains(noteQuery.keyword) || n.content.Contains(noteQuery.keyword));
+            }
+            if(noteQuery.IsDecsending == true)
+            {
 
-
-                if(noteQuery.IsDecsending == true)
-                {
-                    notes = ((IOrderedQueryable<Note>)notes).ThenByDescending(c => c.created_at);
-                }
-                else
-                {
-                    notes = ((IOrderedQueryable<Note>)notes).ThenBy(c => c.created_at);
-                }
+                notes = notes
+                    .OrderByDescending(p => p.is_pinned)    
+                    .ThenByDescending(c => c.created_at);   
             }
             else
             {
-        
-                if(noteQuery.IsDecsending == true)
-                {
-                    notes = notes.OrderByDescending(c => c.created_at);
-                }
-                else
-                {
-                    notes = notes.OrderBy(c => c.created_at);
-                }
+            
+                notes = notes
+                    .OrderByDescending(p => p.is_pinned)    
+                    .ThenBy(c => c.created_at);            
             }
 
             var skip = (noteQuery.PageNum - 1) * noteQuery.PageSize;
             return await notes.Skip(skip).Take(noteQuery.PageSize).ToListAsync();
         }
 
-        public async Task<Note?> GetByIdAsync(int id)
+        public async Task<Note?> GetByIdAsync(int id, string appUser)
         {
-            return await _context.Notes.FirstOrDefaultAsync(u => u.Id == id);
+            
+            
+            return await _context.Notes
+                .FirstOrDefaultAsync(n => n.Id == id && n.user_id == appUser);;
         }
 
         public async Task<Note?> UpdateAsync(int id, Note noteMo)

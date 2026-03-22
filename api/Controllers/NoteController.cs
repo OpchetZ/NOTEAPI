@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using api.Dtos.Note;
 using api.Extensions;
@@ -32,7 +33,10 @@ namespace api.Controllers
         {
             var username = User.GetUsername();
             var appUser = await _userManager.FindByNameAsync(username);
-           
+            if (appUser == null)
+            {
+                return Unauthorized("User not found or token is invalid.");
+            }
             if(!ModelState.IsValid)
                 return BadRequest(ModelState);
             var notes = await _noteRepo.GetAllAsync(noteQuery,appUser);
@@ -42,11 +46,18 @@ namespace api.Controllers
         }
 
         [HttpGet("{id:int}")]
+        [Authorize]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
+            var username = User.GetUsername();
+            var appuser = await _userManager.FindByNameAsync(username);
+            if (appuser == null)
+            {
+                return Unauthorized("User not found or token is invalid.");
+            }
             if(!ModelState.IsValid)
                 return BadRequest(ModelState);
-            var note =await _noteRepo.GetByIdAsync(id);
+            var note =await _noteRepo.GetByIdAsync(id,appuser.Id);
 
             if(note == null)
             {
@@ -56,6 +67,7 @@ namespace api.Controllers
             return Ok(note.ToNoteDto());
         }
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> Create([FromBody] CreateNoteDto noteDto)
         {
             if(!ModelState.IsValid)
@@ -73,6 +85,7 @@ namespace api.Controllers
         }
         [HttpPut]
         [Route("{id:int}")]
+        [Authorize]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateNoteDto noteDto)
         {
             if(!ModelState.IsValid)
@@ -87,6 +100,7 @@ namespace api.Controllers
         }
         [HttpDelete]
         [Route("{id:int}")]
+        [Authorize]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
             if(!ModelState.IsValid)
