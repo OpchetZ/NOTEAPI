@@ -9,8 +9,8 @@ namespace api.interfaces
 {
     public interface INoteRepository
     {
-        Task<List<Note>> GetAllAsync(NoteQueryOb noteQuery,AppUser user);
-        Task<Note?> GetByIdAsync(int id);
+        Task<List<Note?>> GetAllAsync(NoteQueryOb noteQuery,AppUser user);
+        Task<Note?> GetByIdAsync(int id,string appUser);
         Task<Note> CreateAsync(Note noteMo);
         Task<Note?> UpdateAsync(int id,Note noteMo);
         Task<Note?> DeleteAsync(int id);

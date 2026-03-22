@@ -38,9 +38,13 @@ namespace api.Repository
             return notemodel;
         }
 
-        public async Task<List<Note>> GetAllAsync(NoteQueryOb noteQuery, AppUser user)
+        public async Task<List<Note?>> GetAllAsync(NoteQueryOb noteQuery, AppUser user)
         {
             var notes = _context.Notes.Where(a => a.user_id == user.Id).AsQueryable();
+            if (!string.IsNullOrWhiteSpace(noteQuery.keyword))
+            {
+                     notes = notes.Where(n => n.title.Contains(noteQuery.keyword) || n.content.Contains(noteQuery.keyword));
+            }
             if(noteQuery.IsDecsending == true)
             {
 
@@ -60,9 +64,12 @@ namespace api.Repository
             return await notes.Skip(skip).Take(noteQuery.PageSize).ToListAsync();
         }
 
-        public async Task<Note?> GetByIdAsync(int id)
+        public async Task<Note?> GetByIdAsync(int id, string appUser)
         {
-            return await _context.Notes.FirstOrDefaultAsync(u => u.Id == id);
+            
+            
+            return await _context.Notes
+                .FirstOrDefaultAsync(n => n.Id == id && n.user_id == appUser);;
         }
 
         public async Task<Note?> UpdateAsync(int id, Note noteMo)
