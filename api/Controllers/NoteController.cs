@@ -112,9 +112,15 @@ namespace api.Controllers
         [Authorize]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
+            var username = User.GetUsername();
+            var appuser = await _userManager.FindByNameAsync(username);
+            if (appuser == null)
+            {
+                return Unauthorized("User not found or token is invalid.");
+            }
             if(!ModelState.IsValid)
                 return BadRequest(ModelState);
-            var notemodel = await _noteRepo.DeleteAsync(id);
+            var notemodel = await _noteRepo.DeleteAsync(id,appuser.Id);
 
             if (notemodel == null)
             {

@@ -25,9 +25,10 @@ namespace api.Repository
             return noteMo;
         }
 
-        public async Task<Note?> DeleteAsync(int id)
+        public async Task<Note?> DeleteAsync(int id,string appUser)
         {
-            var notemodel = await _context.Notes.FirstOrDefaultAsync(x => x.Id ==id);
+            var notemodel = await _context.Notes.FirstOrDefaultAsync(n => n.Id ==id && n.user_id == appUser);
+           
 
             if(notemodel == null)
             {
