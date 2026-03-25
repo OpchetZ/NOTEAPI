@@ -69,12 +69,12 @@ namespace api.Repository
             
             
             return await _context.Notes
-                .FirstOrDefaultAsync(n => n.Id == id && n.user_id == appUser);;
+                .FirstOrDefaultAsync(n => n.Id == id && n.user_id == appUser);
         }
 
-        public async Task<Note?> UpdateAsync(int id, Note noteMo)
+        public async Task<Note?> UpdateAsync(int id, Note noteMo,string appUser)
         {
-            var checkNote = await _context.Notes.FindAsync(id);
+            var checkNote = await _context.Notes.FirstOrDefaultAsync(n => n.Id == id && n.user_id == appUser);
 
             if(checkNote == null)
             {
