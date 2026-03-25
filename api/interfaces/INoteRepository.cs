@@ -13,6 +13,6 @@ namespace api.interfaces
         Task<Note?> GetByIdAsync(int id,string appUser);
         Task<Note> CreateAsync(Note noteMo);
         Task<Note?> UpdateAsync(int id,Note noteMo,string appUser);
-        Task<Note?> DeleteAsync(int id);
+        Task<Note?> DeleteAsync(int id,string appUser);
     }
 }
