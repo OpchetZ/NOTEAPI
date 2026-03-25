@@ -88,9 +88,18 @@ namespace api.Controllers
         [Authorize]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateNoteDto noteDto)
         {
+            var username = User.GetUsername();
+            var appuser = await _userManager.FindByNameAsync(username);
+            if (appuser == null)
+            {
+                return Unauthorized("User not found or token is invalid.");
+            }
             if(!ModelState.IsValid)
                 return BadRequest(ModelState);
-            var note = await _noteRepo.UpdateAsync(id,noteDto.ToNoteFromUpdate());
+           
+            var AppUser = await _userManager.FindByNameAsync(username);
+            var note = await _noteRepo.UpdateAsync(id,noteDto.ToNoteFromUpdate(),AppUser.Id);
+            
 
             if(note == null)
             {

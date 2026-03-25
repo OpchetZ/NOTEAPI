@@ -12,7 +12,7 @@ namespace api.interfaces
         Task<List<Note?>> GetAllAsync(NoteQueryOb noteQuery,AppUser user);
         Task<Note?> GetByIdAsync(int id,string appUser);
         Task<Note> CreateAsync(Note noteMo);
-        Task<Note?> UpdateAsync(int id,Note noteMo);
+        Task<Note?> UpdateAsync(int id,Note noteMo,string appUser);
         Task<Note?> DeleteAsync(int id);
     }
 }
